@@ -1,0 +1,20 @@
+The Command Line
+================
+
+The command line is a tool that can be used to do anything that the computer is capable of. It is a bit complex at points, but it allows full control over what you have the access and possibilities to do.
+
+There's a myriad of useful commands, but here are some of the most important ones:
+
+cd <where to go> - cd is used to change the directory based off a provided destination
+    cd someFolder // goes to some folder (tab can be pressed to autocomplete a name if the given entry is specific enough, for example, cd someF*tab* => cd someFolder
+    cd .. // goes up a folder
+    
+ls - lists all the files in the current directory
+
+touch - used to create a file of given argument (ex: touch notes.txt)
+
+mkdir - used to create a folder of given argument (ex: mkdir someFolder)
+
+rm - Removes something of given argument (ex: rm blue.txt) // Deletes blue.txt
+
+rm -rf - Same as rm, but with the -rf (recursive force) flag which specifies to delete an entire directory (rm -rf colors) // Delete colors folder and all child directories / files
