@@ -1,0 +1,57 @@
+NodeJS
+======
+
+What is NodeJS?
+    NodeJS is a very popular server side development runtime that is build on Chrome's V8 JS Engine
+    It uses Node Package Manager, NPM, to add packages from a huge ecosystem of open source code that are created by other developers for use (Express, Authenticate, Mongoose, Nodemon, etc.)
+    
+    Node is how JavaScript is ran on the server side.
+    
+Why NodeJS?
+    Node is very popular currently, and because of that there is a large community of support and bug fixing with new powerful pieces of code being added every day.
+    But that's not the main reason.
+    
+    NodeJS is a high performance back end technology, why it is high performance is complicated, but it is and that makes it good.
+    It's also in JS! The familiarity with JS closes the learning gap between front end and back end and makes stacks much more uniform to developers.
+    
+It doesn't matter (long term)
+    Eventually, the development environment will change. Web development is a fast moving field, and there's tons of tech out there that is in use, theres those that have faded out,
+    and there those that are taking the field by storm. Learning web dev isn't about knowing a specific language or framework, it's about a more meta understanding of how things operate,
+    and keeping up with development trends in the field. NodeJS is a great place to start learning.
+    
+    
+Using Node
+----------
+
+    Interacting with the Node consoless
+        Node has its own version of the console in the command line utility, and javascript commands can be executed.
+            Honestly, it's not super useful. But that's ok.
+        Open it by typing node, CTRL+C twice or CTRL+D to quit
+            REPL: Read, Evaluate, Print, Loop
+        Not every JS functionality is available
+            While this is JS, it does not have access to browser-based functions, like alert() or prompt(). 
+            The DOM, selectors, manipulation tools, event listeners, etc. are NOT a part of node, and are not available since node is server-side
+            
+    Running a file with Node
+        A JS file can be created and executed in the command line (without a browser) in the node command line. 
+            node <filename> // Tries to execute the file provided
+    
+Node Package Manager (NPM)
+--------------------------
+
+    What is NPM?
+    
+        NPM is a package manager for node/javascript, a tool used to get packages that can be used with node to add verbose functionality to a project.
+            A package is basically a library, it's a set of code that someone wrote to provide functionality without the need to hand code
+            
+    Why is NPM so great?
+    
+        All packages are centralized on the npm website, npmjs.com 
+        Node command line has a tool called npm that allows you to simply enter a package name and it will add it to your project (provided it is on npmjs.com)
+        
+    What packages will be used in this course?
+    
+        Packages need to be installed inside a directory in which they will be used, typically the root project directory for any given project.
+        Installing a package will create a node_modules directory, this is where all packages are kept.
+        To import a module, var <some var name> = require('some package name>");
+            This will import the package into your file and set whatever the export of the package module is to the variable given.
