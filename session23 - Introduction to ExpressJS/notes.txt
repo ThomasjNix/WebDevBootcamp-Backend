@@ -1,0 +1,87 @@
+Introduction to ExpressJS
+=========================
+
+What is a framework and how is it different from a library?
+    Frameworks are also collections of code that other people wrote to include in projects, very similar to libraries, but...
+    They tend to be much larger and more verbose, requiring teams of people to create / implement / maintain 
+    But more importantly: Libraries are just a bunch of code that gives you the options on how to implement the control flow of the code.
+        Frameworks on the other hand all have internal control flow, and only allow you to fill in some of the missing areas
+        with information you need to give the framework, allowing it to handle all of the rest of the work.
+        
+    Libraries and Frameworks are both external code, but you are in control of a library. Frameworks on the other hand, control is limited. Some decisions in frameworks are made 
+    for you. Frameworks package up a lot of the common code that are in projects and take care of it, so that developers can focus on the more project-specific 'stuff'.
+    
+What is ExpressJS?
+    ExpressJS is a web development framework. It takes care of a lot of the routing and handling database connections that are needed for web apps that are typically
+    lengthy and painful to write for no real advantage other than specificity.
+
+Why use ExpressJS?
+    Similar to Node in general, express is THE most popular NodeJS framework on NPM. There's tons of tutorials and a large community of express users.
+    ExpressJS is a lightweight framework, and that means that it has a lot of places that you can add your own information, and not much is hidden. 
+        Heavyweight frameworks don't have much room for adding your own information, and a LOT of the work is hidden behind the framework's covers.
+        
+        
+    --save and --save-dev
+    
+        This has to do with the package.json file.
+        
+        What is package.json and what is it for?
+        
+            package.json is a file that holds metadata about the project, including author name, 
+            repository, version, and most importantly, packages that are involved with the package
+            
+            Packages directly involved with the code that executes in the project are saved under the dependencies object,
+            where as packages that only relate to the development environment are saved in the dev dependencies object,
+            and are not included with the server code, only development.
+            
+        Why is this needed?
+        
+            Well, would you rather send every single file from every single package to every single 
+            contributor to a project, or a single file with the names of all the packages used and let 
+            each of the contributors install them individually?
+            
+            It's just smart managing. All you need to install an npm package is a name, so just
+            send all the names!
+            
+    
+        Use npm init to create a package.json, officially setting up a node project.
+        
+    
+    Route Matching
+    
+        * - matches ANY url that isn't already defined previously
+        
+        app.get('/dogs', ...);
+        app.get('*', ...)
+        
+        someurl/dogs will access the first get, anything instead of dogs, including ampty route, will match *
+        It's kind of like a catch-all
+        
+        Warning: putting a route first in the file WILL check the request against it first!
+        If a route is matched, it will not fall through to any other routes
+        
+            For example, if you put app.get('*', function...) first, no 
+            other routes will ever trigger.
+            
+        
+        Route parameters
+        
+        you can use the route parameter operator : to check a route for a given value
+        
+            app.get('someRoute/:specificCategory/subCategory/:id', function(){
+                // do something with specificCategory
+                
+                // do something with Id
+            });
+            
+            the : basically turns anything that starts with : before the name
+            is capable of being used as a variable in the routing logic 
+            
+            It's important to note that whatever comes after :something must come
+            before the next route selector /. 
+            
+            This wouldn't work: /someRoute/aspecificcategory/whatever/somethingelse, 
+            it would have to be /someRoute/<some category you want>/subCategoy/<some id>
+            
+            These variables can be accessed with <request object name>.params.<route variable name>,
+            for example: req.params.specificCategoy
