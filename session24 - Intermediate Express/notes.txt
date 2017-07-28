@@ -1,0 +1,336 @@
+Intermediate Express
+====================
+
+Template and EJS
+----------------
+
+    Using response.render() to render an HTML file from an EJS file
+        You *could* add HTML to an app.send to send HTML to the client on a request... but that's 
+            1. Not very DRY
+            2. Extremely tedious
+            
+        Code/markup (HTML, CSS, JS) can be written in a seperate file and rendered as a response to the request with the response.render method.
+            response.render() takes a name of a file to render as an argument. 
+                => Important: when using express, you don't write plain HTML files. You use dynamic HTML files, called templates.
+                
+                The most common template is Embedded JavaScript (EJS).
+                    
+                        app.get('/', function(req,res){
+                            res.render('someFile.ejs');
+                    });
+                    
+                  ***  => To use EJS, the EJS package needs to be installed  ***
+                        npm install --save ejs
+                
+                IMPORTANT: These rendered files are not meant to be in the same directory as app.js, EVEN THOUGH no specified path is given. Express knows to use the path 
+                needed for the file. They should all be kept in a directory called 'views'.
+                
+                Folder structure so far:
+                
+                ProjectFolder
+                --app.js (where res.render('someFile.ejs') is used)
+                --views 
+                ----someFile.ejs (where the HTML is kept as EJS)
+
+Passing variables to EJS templates
+----------------------------------
+    
+     It's very useful to be able to send data in the form of variables to EJS pages (that's why they are embedded javascript) for the purposes
+     of displaying data dynamically. Otherwise it would just be a static page! 
+     
+     EJS Allows you to embed events, loops, variables, all kinds of things inside EJS that are logically decided on via the back end
+        (this is a super big part of database querying and such as well)
+     
+     This is where EJS syntax comes in handy. On the server you can write something like:
+     
+        app.get('/somePage/:someVariable', function(req,res){
+            var userDefinedVariable = req.params.someVariable;
+            res.render('somePage.ejs', {
+                someVariable: userDefinedVariable
+            });
+        });
+            
+            Passing variables to the template requires object notation, where the key is the value that the template
+            will be able to access, and the key is the value you want to send. Any number of variables and data can be sent using this pattern.
+            The data does not have to be defiend in the query. 
+     
+     and then on the actually EJS file you can write 
+     
+        <h1>The variable you sent is: <%= someVariable %></h1>
+        
+            Anything inside of the <%= %> is treated as javascript to be printed to the screen
+            
+            Important! - Every line  of JS must be wrapped in the EJS operator thingies.
+EJS Conditionals and Loops
+--------------------------
+
+    A big part of JS is conditional logic and looping, and that's super useful in EJS files as well.
+    
+    Examples of Control Flow in EJS
+        Reddit - Posts loaded in similar format. Developers don't actively hard code thousands of posts an hour, and not all posts are the same. 
+            EJS is written with conditional logic to decide what will post, as well as looping through the data and printing it all to the page.
+    
+    If statements in EJS
+    
+        You can write an if statement just like regular JS, however every line needs to  be wrapped with the EJS operator thingies.
+        
+        An important note though: EJS has three types of tags.
+        
+        <%= %> : This means that any value that is returned inside the brackets via the code will be rendered to the page.
+        <% %> : This set of brackets is used for logical JS, not for JS that is meant to be on the page.
+        (and a third that will come later)
+        
+        So the logical part of the if statement must be wrapped in the second tags.
+    
+            EX: 
+                <% if (someBoolval){ %> // Notice how there's no =. THat's because this is purely logical information.
+                    <h1> This is a title that is meant to be printed! Here's a variable for demonstration: <%= variable %> </h1> // Notice how only the JS is wrapped with the <%= %>, the HTML DOES NOT GO IN THESE TAGS. The HTML falls within the if statement however, so unless someBoolVal is true, it won't be rendered.
+                <% }else{ %>
+                    <h2> No h1 for you! </h2> // See above comment, no need for EJS tags here. Will only render the <h2> if someBoolVal is false!
+                <% } %> // Closing bracket is part of the logic / syntax of JS, so it goes inside tags too.
+    
+    
+    Loops in EJS
+    
+        Loops are super easy and useful with EJS and Express, here's an example
+        
+            // On the server
+            
+                app.get('/printAList', function(req,res){
+                    var someTitles = ['title1', 'title2', 'title3];
+                    var someValues = ['value1', 'value2', 'value3']; // Of course, this can be done with much better syntax, but it's an example.
+                    res.render('printAList.ejs', {
+                        someTitles: someTitles,
+                        someValues: someValues
+                    });
+                });
+            
+            // On the template 
+            
+                <ul>
+                    <% for (var i = 0; i < someTitles.length; i++){ %>
+                    
+                        <li>Title: <%=someTitles[i] %>, Value: <%=someValues[i]%></li> // This will render 3 li's!
+                    
+                    <% } %>
+                </ul>
+            
+            result: 
+                // in a UL 
+                    Title: title1, Value: value1
+                    Title: title2, Value: value2
+                    Title: title3, Value: value3
+                
+        This may sound pretty tedious, but it is FAR more tedious (and less useful) to hand-code a static number of lis with static values, 
+        especially if you have 10,000 list items to display.
+            (and as for the backend, a query can be made to a databse so gathering all that data is easy. All you have to do is write the loop, 99% of the work 
+            is done for you after that!)
+        
+        This is the power of dynamic web pages.
+        
+Serving Custom Assets
+---------------------
+
+    Of course, you don't ONLY want to send HTML to users, CSS has a place in all this too! And external JS files!
+    
+    Properly rendering public assets
+    --------------------------------
+        
+        Don't write CSS inline, that's not DRY and it's also not CUTE. 
+        Use a link tag to link to the stylesheet. 
+            With EJS, this is a little different. 
+            
+            <link rel="stylesheet" href="css/someStylesheet.css">
+            
+            Looks normal, however.. This shouldn't be in the same directory as app.js! This should be in a public assets directory, which can be called anything,
+            but 'public' is common.
+            
+            Project tree: 
+            
+                ProjectRootFolder
+                --app.js
+                --public
+                ----css
+                ------someStylesheet.css
+                --views
+                ----somePage.ejs
+                
+            but then shouldn't the href be "public/css/someStylesheet.css"?
+                No! It shouldn't, because we tell Express that our images, stylesheets, and all other assets are in the public directory. 
+                Then EJS is smart enough to know to load "css/someStylesheet.css" from INSIDE the public folder! 
+                
+            This is how that's done: 
+            
+                // At the top of the server file, before any routing
+                
+                app.use(express.static("public"));
+                    -> This says "use the folder "public" as the static source for all assets
+                    
+    
+    Proper configuration of EJS
+    ---------------------------
+    
+        You can tell express to use EJS ahead of time so you don't have to write <filename>.ejs every time you render something. 
+        
+        To do that, use this line at the top of the server file: 
+        
+        app.set('view engine', "ejs"); // Use EJS as the view engine.
+    
+        Remember, app is the object returned by executing express(), which is the object/function returned by requiring express (requiring express returns whatever module.exports
+        is equal to in express)
+        
+            var express = require('express'); // Now express is the object/function returned from the require statement, i.e the exports of the express framework
+            var app = express(); // now app is the object returned by calling the function that was set to express
+            
+        (This information may not be spot on, but it's pretty close and a good idea of the flow of how express operates at the dev level)
+        
+        
+    Using partials to DRY up code
+    -----------------------------
+    
+        Partials are super useful because they allow you to save tons of time writing HTML/EJS, and simply including what you need to where you need to. 
+        
+        Examples of how this is useful: 
+            the layout which includes the HTML tag, head, and body tags you don't want to write every time
+            some small piece of HTML/EJS that you want to put on multiple pages
+            a list of styles or scripts you don't want to write every time
+            
+        Tada! partials. Partials are HTML/JS that only include a certain amount of HTML/EJS that is necessary. Truly modularized pages will have 
+        every small piece of data that can be a partial as a partial, that way these pieces of markup can be put together in any variety of ways 
+        like building blocks, which is the essense of reusable code and scaling.
+            
+        
+        How to actually use partials: 
+        
+            1. Create a directory in the views folder called partials 
+            2. Create EJS files for the partials to reside in
+            3. In every partial, write the HTML/EJS that you will use wherever the partial is rendered 
+            4. Wherever you want to include the partial, just use <% include /partials/(some partial name, no .ejs needed) %>
+            
+        This is the part where the paths get a little complicated. 
+        
+        
+        Note that app.use(express.static('public')); is in use, so all JS/CSS/IMG/etc. will be served via that directory. 
+            When giving a src or href for JS/CSS, it's important to use '/<CSS or JS folder>/<CSS or JS file>'. The / distinguishes 
+            searching for the file in the root of the provided static route (the public folder) from searching in the current location where 
+            the script or link tag is used. If no / is provided when the app.use statement is used, the page will request those files
+            from the location it resides in. 
+            
+        As for the partials, using the include statement will search for the files inside the views folder, since it is including an EJS file, not much 
+        different from how EJS looks for the views folder when trying to render a file. That is why you have to specify partials/<partial name> in the include statement. 
+        
+        Finalized example: 
+        
+        views/partials/Header.ejs
+            
+            <html>
+                <head>
+                    <title>Some Title</title>
+                    <link rel="stylesheet" href="/css/someCSSPage.css">
+                </head>
+            </html>
+            <body>
+        
+        views/partials/Footer.ejs
+        
+                    <!-- some footer content -->
+                </body>
+            </html>
+            
+        
+        views/index.ejs
+        
+            <% include partials/header %>
+            
+                <!-- Some EJS, it doesn't matter what --> 
+            
+            <% include partials/footer %>
+            
+        app.js (relevant parts)
+        
+            app.use(express.static('public'));
+            app.set('view engine','ejs');\
+            
+            app.get('/',function(req,res){
+                res.render('index');
+            });
+            
+        Project tree structure: 
+        
+        ProjectRootFolder
+        --public
+        ----css
+        ------someCSSPage.css
+        --views
+        ----partials
+        ------Header.ejs
+        ------Footer.ejs
+        ----index.ejs
+        --app.js
+        
+        What happens when this code runs: 
+        
+            1. set public static directory to 'public' (within the same directory as app.js)
+            2. set view engine to ejs 
+            3. app.get used and when '/' is requested, it renders index (no .ejs needed, see line 2)
+            4. index.ejs renders partials/header.ejs and partials/footer.ejs as needed (no ejs needed, see line 2. no views/ needed since it's looking for an EJS file)
+            5. Header.ejs looks gets someCSSPage.css from public/css/ (no public/ needed, see line 1)
+            6. The constructed page is loaded in the following order:
+                -Header.ejs
+                ->CSS file 
+                -index.ejs body
+                -Footer.ejs
+
+
+Post requests
+-------------
+
+     So far we've only been using get requests, now it's time to see another type of request, POST. These notes come from observation rather than explanation. 
+     
+     Post route
+        Just like the GET HTTP verb, the POST verb is very useful for giving the server information to operate on. 
+        
+        It's used with express by using app.post('<url>', function(req,res){ // code });
+     
+        When something triggers this POST route, the inside code will fire, just like a GET request.
+        
+     Forms
+     
+        Forms are the typical way to POST information. They are set up like the following: 
+        
+        <form action="<url path to POST>" method="POST">
+            <input name="<variable the server will access>">
+            <button type="submit">Submit</button>
+        </form>
+        
+            => It's important that the action path matches the post path EXACTLY. If you use app.post('/somePath/newValue', ...), then
+                the action needs to be action='somePath/newValue'
+        
+        Clicking the submit button will POST the information in the input field to the server,
+        and the server can access the information via the name variable you gave the input.
+        
+        For example, if the input had a name of "dogBreed", the server could use req.body.dogBreed to access what you put.
+        
+        ...or could it?
+     
+     body-parser
+     
+        Express can't natively access the request object like that, so a package is used to make it able to do so. 
+        
+            npm install body-parser --save-dev 
+            
+        After running that, there's 2 lines that need to be coded into the server before you can access the body object of the request.
+        
+        1. require body-parser  
+            => var bodyParser = require('body-parser');
+        2. Tell express to use body-parser, which is complicated and likely will just be copy-pasted in. 
+            => app.use(bodyParser.urlencoded({extended: true}));
+        
+        
+        Now inside your app.post, you can use req.body.dogBreed (or whatever name you gave to the input on the POST form) to access the information that was passed in.
+        
+    res.redirect()
+    
+        This is a response method that responds to a request (after doing whatever logic is necessary) by redirecting the user to the specified path.
+            This is useful in form submits because it can redirect the user to the same page they submitted the form data on, giving the appearance of quickly POSTing 
+            without changing pages.  (This is appearance only, the page DEOS refresh.)
