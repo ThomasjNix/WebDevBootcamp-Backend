@@ -1,0 +1,89 @@
+Intro to APIs
+=============
+
+API is an Application Program(ming) Interface
+    They are interfaces for code/computers to talk to one another.
+    
+    APIs can be for a variety of software communications, but the kind web developers use is a Web API.
+    Web APIs get their data through the internet by connecting to the servers and requesting information from those servers given certain arguments.
+    
+JSON and XML
+------------
+    
+        Web APIs don't respond with HTML, they respond with data, not structure. For this, they use data formats like JSON and XML.
+    
+    JSON : JavaScript Object Notation 
+    
+        JSON looks similar to JavaScript, and it uses the same Object notation to define data. 
+        
+        {
+            "person": {
+                "age":"21",
+                "name":"Travis",
+                "city":"Los Angeles"
+            }
+        }
+        
+        => Yes, the quotes around the keys are 100% required.
+    
+    XML : eXtended/eXtendable Markup Language
+        Syntactically similar to  HTML, but not the same. 
+        
+        <person>
+            <age>21</age>
+            <name>Travis</name>
+            <city>Los Angeles</city>
+        </person>
+        
+        The tags can be whatever you want, and server side code can parse the data and extract it. 
+        
+        
+        XML used to be more popular than JSON, but now with the rise of server side JavaScript, JSON has taken the lead in popularity. 
+            THis is because JSON doesn't need much effort to be converted into JS.
+
+
+Making API Calls with Node
+--------------------------
+
+    curl <url> can be used to make a request from the console, and from node, a package called 'request' can be used.
+    
+    npm install --save request
+    var request = require('request');
+    
+    request('<some URL to request to>', function(error, response, body){
+    
+        // Handle errors, check response type, do logic with the body 
+        if (error){
+            // Handle error
+        }else if (response.statusCode !== 200){
+            // Handle status problem
+        }else{
+            if (response.statusCode === 200){
+                // No errors and a successful status code,
+                // do logic on the body!
+            }
+        }
+    });
+    
+            => Of course, the conditional logic syntax can be simplified, but this is for demonstration purposes.
+    
+        => A callback is used here because requests aren't instantaneous, they can take time.
+        => It's also used to make sure the response is as expected and has no errors.
+            => 200 status code is successful, others indicate other things. 
+    
+    JSON.parse(<JSON object, for example, the body object>) returns a parsed JSON object as a JS Object
+    
+    Ex: 
+        JSONObject =  {
+            "person": {
+                "age":"21",
+                "name":"randomName",
+                "city":"nowhere"
+                }
+            }
+            
+        var data = JSON.parse(JSONObject);
+        
+        data["person"]["age"]; // "21"
+        data["person"]["name"]; // "randomName"
+        data["person"]["city"]; // "nowhere"

@@ -1,0 +1,17 @@
+<% include partials/header %>
+
+
+<h1>Results Page</h1>
+
+<% if (data){ %>
+    <ul>
+        <% data.forEach(function(movie){ %>
+        <li>Title: <%= movie["Title"] %></li>
+        <% }) %>
+    </ul>
+<% }else{ %>
+    <h3>No results!</h3>
+<% } %>
+
+
+<% include partials/footer %>
