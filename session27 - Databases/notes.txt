@@ -1,0 +1,146 @@
+Databases
+=========
+
+What is a Database?
+    Databases are ways of storing data seperately from the back end, it keeps data in tact and is also 
+    capable of storing new data and retrieving specific data based on query terms.
+    
+    Databases have interfaces in which data can be queried and retrieved, as well as placing data into the database
+
+What is SQL? How does it differ from NoSQL?
+
+    SQL/Relational differs from NoSQL/Non-relational databases in the following ways:
+        -SQL databases have been around the longest.
+        -SQL databases are tabular, they are flat.
+            If you have a "user" table, you must define what a "user" looks like (what properties it has), and all users must follow this pattern
+            If you want a relationship between one table and another, another table needs to be used via a join table. 
+            
+            User table
+            ----------
+            id  name    age 
+            1   blah    23
+            2   travis  22  
+            3   bob     37
+            
+            Comments table
+            --------------
+            id  comment
+            1   "I'm bob"
+            2   "I'm blah"
+            3   "I'm travis"
+            4   "I like puppies"
+            
+            These tables can ONLY be related in SQL / Relational databases through tables like this:
+            
+            User/Comments Join Table
+            ------------------------
+            userId  commentId
+            1       2
+            2       3
+            3       1
+            3       4 
+            
+            These types of tables aren't very flexible, if you wanted to add an attribute to a specific user, you would have to
+            add the attribute to the entire table, and supply SOME value for every entry in that table
+            
+        =NoSQL databases DON'T have to have patterns defined ahead of time, and are much more flexible
+        =There's no tables
+        =there can be nested data (it's not flat!)
+        
+            NoSQL DB Entry Example:
+            
+            {
+                Name: "bob",
+                age: 37,
+                comments: [
+                    text: "I'm bob",
+                    text: "I like puppies"
+                ]
+            }
+            
+                => Notice how there's no user table and no comments table and ESPECIALLY no join table,
+                    the comments are just nested into the bob entry!
+                    
+                => This syntax is similar to JS, it's called BSON. meaning Binary JSON
+            
+            
+             {
+                Name: "travis",
+                age: 22,
+                comments: [
+                    text: "I'm bob",
+                    text: "I like puppies"
+                ],
+                favColor: "pizza"
+            }
+            
+                => New entries can even have attributes that other entries don't have!
+                
+                
+Setting up MongoDB
+------------------
+
+    1. Set up data directory
+    2. Tell mongo to store data in this directory 
+    3. Set permissions for mongo
+
+Mongo Shell Basics
+------------------
+
+mongod
+    This stands for mongo demon, it starts the mongo demon and spins up the database. Must be running to use mongo.
+    
+mongo
+    Used to open the mongo terminal where commands can be used
+
+help
+    Used to show a list of commands and what they do in the mongo terminal
+
+show dbs
+    Show all the database names in the database, along with their sizes. Only shows databases that aren't empty (add data using collections)
+
+use
+    Use to select a database for use. If the database doesn't exist, it will create it.
+
+insert
+    Used to add data to a collection. If no collection exists, it will create one.
+        => db.DBNAME.insert({
+            key: value,
+            key: value, 
+            key: value
+        }) // db is the currently selected DB with the use statement
+        
+        (keys do not need quotes, but string values do. Numeric values do not.)
+
+find
+    Used to locate data in a database. 
+        => db.DBNAME.find() // Defaults to finding by _id, which is unique for every entry. Arguments can be provided to define what is found.
+        => db.DBNAME.find({city: "Charlotte"}) // Finds all instances where city is Charlotte
+
+update
+    Used to update existing data to new values
+    
+    => db.DBNAME.update({SELECTED OBJECT VALUES}, {SELECTED VALUES TO UPDATE}) // Will find all entries with the first object matching properties and replaces all data 
+        -> Warning! This will erase all values not specified in the second object
+            To avoid this, you can provide how you want data to be updated using $set: {VALUES TO UPDATE}
+            $set: preserves other values
+                => db.DBNAME.update({someKey: someValue}, {$set: {someOtherKey: someNewValue}})
+
+
+remove
+    This erases data. 
+    db.DBNAME.remove({VALUES TO MATCH})
+        .limit(number) will remove a set number rather than all matching results
+
+
+The DB actions involving data use the acronym CRUD, create, read, update, destroy
+
+
+Express and Mongoose
+-------------------
+
+Mongoose is a package that is useful for connecting to Mongo and interacting with the database
+
+Mongoose is an Object Data Mapper (ODM), and is a way to write javascript to interact with a Mongo database.
+    
+    For specific notes on creating schemas, models, instances, and interacting with a database, see the app.js file in this repository.
