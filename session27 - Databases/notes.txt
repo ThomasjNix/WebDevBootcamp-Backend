@@ -144,3 +144,25 @@ Mongoose is a package that is useful for connecting to Mongo and interacting wit
 Mongoose is an Object Data Mapper (ODM), and is a way to write javascript to interact with a Mongo database.
     
     For specific notes on creating schemas, models, instances, and interacting with a database, see the app.js file in this repository.
+    
+    
+RESTful routes:
+---------------
+RESTful routes are a pattern that many other software follow and makes our code structured and predictable
+
+INDEX
+    /dogs
+    GET, shows list of all dogs
+
+NEW
+    /dogs/new
+    GET, shows the form to create a new dog 
+    
+CREATE
+    /dogs/new
+    POST, adds new dogs to the database
+    
+SHOW
+    /dogs/:id
+    GET, shows information about a specific dog
+        -> Important, this should go AFTER /dogs/new so that /new doesn't trigger as an ID
