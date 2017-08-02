@@ -1,0 +1,51 @@
+Intro to REST
+=============
+
+REST stands for Representational State Transfer. It is a way of defining a pattern for HTTP routes. 
+
+It uses CRUD operations to design a rational and refined pattern of routes to use. There are 7 RESTful route patterns for these 4 CRUD operations.
+Create
+Read
+Update
+Destroy 
+
+The following 7 RESTful routes are as follows (using a site about dogs as an example):
+
+    GET routes:
+        Index - use /dogs 
+        New (form to create a new dog) - use /dogs/new 
+        Show (info about a specific dog) - use /dogs/:dogId
+        Edit (form to edit a specific dog) - use /dogs/:dogId/edit
+    
+    POST route:
+        Create - use /dogs 
+        
+    PUT route:
+        Update (Actual update request) - use /dogs/:id
+    
+    DEELETE route: 
+        Destroy (delete dog) - use /dogs/:id 
+    
+The same route can be used by different HTTP verb requests because a GET request to /dogs/:dogId is NOT the same as a PUT request or DELETE request to /dogs/:dogId.
+These routes are structured and follow a certain pattern, that is such that the route should define the content that you are going to affect, and the HTTP verb should define how you are going to affect it.
+
+    /dogs/:dogId says you are going to do SOMETHING with whatever dog :dogId is linked to, but that could be a GET, it could be a PUT, or it could be a DELETE. Each will affect what is done to that instance.
+
+
+
+
+Method Override
+---------------
+
+There's no real way to submit a PUT or DELETE request using standard form procedures, so a workaround is needed.
+
+Simply add ?_method=PUT or ?_method=DELETE to the end of the action to tell the server it is a PUT request. For this to work, we need the package method-override.
+While this isn't REQURIED (an app.get() route could be created to check for method=PUT or method=DELETE), but this would not be RESTful.
+
+Then you have to include:
+
+var methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
+This will tell the app that whatever _method is set to in the query string, use THAT as the HTTP request type rather than what is originally called.
+    => Note: it doesn't have to be called _method, it could be anything, but it needs to match between the server and the form submission.

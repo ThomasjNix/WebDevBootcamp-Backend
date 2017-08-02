@@ -1,0 +1,11 @@
+.container.main{
+    margin-top: 5em;
+}
+
+i.icon{
+    font-size: 1.5em;
+}
+
+.form-inline{
+    display: inline;
+}
