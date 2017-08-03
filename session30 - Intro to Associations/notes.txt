@@ -1,0 +1,226 @@
+Data Associations
+-----------------
+
+What are associations?
+    The core concept is that data is related, and data associations are just relationships between data. 
+    
+    
+What is one to one? 
+    The simplest relationships, one of an entity is related to one of another entity
+        (One book has one author, one employee has one title)
+    
+
+What is one to many?
+    One entity is related to many of another entity (most common data association)
+        Ex: A facebook user can have multiple photos
+
+What is many to many?
+    Many entities can have relationships to many other entities
+        Ex: Many students cna have multiple classes and multiple classes can have many students
+        
+
+Mongoose: Embedding Data
+
+    Creating one-to-many relationships with mongoose/mongodb through embedding data
+        
+        (Install mongoose and require it, connect to a DB)
+        
+        //Assume there are two models, User and Post (One user can have many posts, each post only has one user)
+        var userSchema = new mongoose.Schema({
+            email: String,
+            name: String
+        });
+        var User = mongoose.Model("User", userSchema);
+        
+        var postSchema = new mongoose.Schema({
+            title: String,
+            content: String
+        });
+        var Post = mongoose.Model("Post", postSchema);
+        
+        THis is the typical way to create schemas and models, however embedding data follows this format:
+        
+            var postSchema = new mongoose.Schema({
+                title: String,
+                content: String
+            });
+            var Post = mongoose.Model("Post", postSchema);
+            
+            var userSchema = new mongoose.Schema({
+                email: String,
+                name: String,
+                posts: [postSchema]
+            });
+            var User = mongoose.Model("User", userSchema);
+        
+                => It's important that the postSchema is defined BEFORE it is used as an embedded field!
+            
+            Then when you create a user: 
+            
+                var someUser = new User({
+                        email: "example@example.com",
+                        name: "Mike",
+                        posts: [
+                            {
+                                title: "example"
+                                content: "content"
+                            },
+                            {
+                                title: "example2"
+                                content: "content2"
+                            },
+                            {
+                                title: "example3"
+                                content: "content3"
+                            }
+                        ]
+                    });
+                
+            And when you want to add a post to a user: 
+                
+            
+                someUser.posts.push({
+                    title: "example4",
+                    content: "content4"
+                });
+        
+            someUser.save(function(err,user){ // Some code });
+        
+        Now someUser will have 4 posts embedded using the schema of postSchema!
+        
+        
+Mongoose: Referencing data via Object References
+
+    Referencing data is different than embedding data. Rather than directly embedding an entire post, you just pass in an object with type and reference model. The type of this data\
+    is mongoose.Schema.Types.ObjectId (ID of the thing to be passed in), and the reference is the model to be passed in. 
+        
+        
+        // Setting up the database
+             var postSchema = new mongoose.Schema({
+                    title: String,
+                    content: String
+                });
+                var Post = mongoose.Model("Post", postSchema);
+                
+                var userSchema = new mongoose.Schema({
+                    email: String,
+                    name: String,
+                    posts: [{
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "Post"
+                    }]
+                });
+                var User = mongoose.Model("User", userSchema);
+          var someUser = new User({
+            email: "bob@bob.com",
+            name: "bob"
+        });
+        
+        
+        // Adding data to the database (assume this is done twice with different posts)
+        
+        Post.create({
+            title: "This post was created independantly!",
+            content: "As in, this is just created and saved to the database!"
+        }, function(err, post){
+            User.findOne({email: "bob@bob.com"}, function(err, foundUser){
+                if (err){
+                    console.log(err);
+                }else{
+                    foundUser.posts.push(post); // Post that was just created and saved to the database
+                    foundUser.save(function(err, data){
+                        if (err){
+                            console.log(err);
+                        }else{
+                            console.log(data);
+                        }
+                    });
+                }
+            });
+        });
+        
+           => This IS a lot. Here's what is happening.
+           
+                -A new post is created with Post.create({}), and data is passed in.
+                    -The callback for this Post.create({}) is ran, in which User.findOne({}) is called
+                        -This finds the one user (bob), and runs its callback function. 
+                            -In this callback function, the post created in the Posts.create({}) is added to bob's (who was just found) posts field 
+                            -Bob is then saved back to the databse, and the callback function prints the data regarding what he was saved with 
+                            
+                If you look at the final output, Bob will have two items in the array for the posts field, and it will be the ID of the post that was created.
+            
+      
+      So great, now Bob has two posts to his name, and they're just complicated looking IDs. How do you tell what Bob actually posted?
+      
+      //Find user and find all posts for the user
+        User.findOne({name: "bob"})
+            .populate("posts")
+            .exec(function(err, user){
+                if (err){
+                    console.log(err);
+                }else{
+                    console.log(user);
+                }
+            });
+
+        What is happening here: 
+        
+            .populate("posts") will populate the field 'posts', looking up the IDs and inserting the correct information
+            .exec() actually starts the query 
+            Assumiung there are no errors, the user data will be logged to the console and the posts field will have an array with 2 items; the posts that were created (NOT the IDs!).
+            
+            
+Module.exports 
+
+    This is a powerful tool used to modularize your code so everything isn't in one file. It allows you to move sections of related code into new files to keep organization. It's also great for 
+    code reusability, as a module you create may be used in multiple areas of your code, and if it was deep within a very specific application file, it would not necessarily be accessible to another
+    place it is needed. 
+    
+    => It's important to note that any packages that are needed MUST be required in the new file as well!
+    
+    Let's say you have a file for the Posts of a databse called post.js 
+    
+    
+    /models/post.js
+    =======
+        var mongoose = require('mongoose');
+        
+        var postSchema = new mongoose.Schema({
+              title: String,
+              content: String
+        });
+        
+        var Post = mongoose.model("Post", postSchema);
+        module.exports = Post;
+        
+     /models/user.js
+    =======
+        var mongoose = require('mongoose');
+        
+        var userSchema = new mongoose.Schema({
+              email: String,
+              name: String,
+              posts: [
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Post"
+              ]
+        });
+        
+        var User = mongoose.model("User", userSchema);
+        module.exports = User;
+        
+    /someOtherFile.js
+    ================
+        var Post = require("./models/post"); => The ./ is needed to signify the current folder, the .js is not needed
+        var User = require("./models/user");
+        
+        // Now Post and User are usable as if they were in the same file!
+        
+        
+    File tree:
+    
+    Root
+    -models
+    --user.js
+    --post.js
+    -someOtherFile.js
