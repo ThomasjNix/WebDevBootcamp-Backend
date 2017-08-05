@@ -1,4 +1,4 @@
-<% include partials/header %>
+<% include ../partials/header %>
 
 <div class="container">
     <header class="jumbotron">
@@ -17,15 +17,16 @@
         <% campGroundList.forEach(function(campground){ %>
             <div class="col-sm-6 col-md-3">
                 <div class="thumbnail">
-                    <img src="<%= campground.imgUrl %>">
-                </div>
-                <h4>Campground: <%= campground.name %><h4>
+                    <img src="<%= campground.imgUrl %>" class="img-responsive">
+                    <h4 class="h4-bold"><%= campground.name %><h4>
                     <p>
                     <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">More Info</a>
                     </p>
+                </div>
+                
             </div>
         <% }); %>
     </div>
 </div>
 
-<% include partials/footer %>
+<% include ../partials/footer %>

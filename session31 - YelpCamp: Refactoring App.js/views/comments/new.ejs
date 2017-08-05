@@ -1,18 +1,15 @@
-<% include partials/header %>
+<% include ../partials/header %>
 
 <div class="container">
     <div class="row">
         <h1 style="text-align: center;">Create a new campground</h1>
             <div style="width: 50%; margin: 30px auto;">
-                <form action="/campgrounds" method="POST">
+                <form action="/campgrounds/<%= campground._id %>/comments" method="POST">
                     <div class="form-group">
-                         <input class="form-control" type="text" name="campgroundName" placeholder="Name">
+                         <input class="form-control" type="text" name="comment[author]" placeholder="Name">
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="text" name="campgroundImage" placeholder="Image URL">
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control" type="text" name="campgroundDesc" placeholder="Description">
+                        <input class="form-control" type="text" name="comment[text]" placeholder="Comment">
                     </div>
                     <div class="form-group">
                           <input class="btn btn-primary btn-lg btn-block" type="submit" value="Submit">
@@ -24,4 +21,4 @@
     
     
 </div>
-<% include partials/footer %>
+<% include ../partials/footer %>
