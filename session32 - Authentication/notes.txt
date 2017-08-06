@@ -1,0 +1,46 @@
+Authentication
+==============
+
+Tools that will be used:
+    
+    PassportJS
+        Authentication is complicated and this package will make life easier, and many professional pages use PassportJS
+        (At the end of the course, a deeper dive into the complexities of auth)
+        
+        -Has over 300 strategies (methods of doing something) for authentication
+        
+        -Has options for facebook, twitter, google, etc. authentication
+        -Supports local log ins 
+    
+    Passport Local
+        A scheme/strategy for authentication. This is the local Passport strategy
+        that can be used for Username and Passwords that are used only on the site 
+        
+        Using local doesn't mean other methods are rendered unavailable, many ways of 
+        authentication can be provided!
+        
+    Passport local mongoose 
+        This is a package that is specifically made to work with mongoose and 
+        help with authenticating user data related to the database 
+        
+Walk through of the authentication flow
+
+    Home page: Log in, log out, register
+        -> Secret page that can only be viewed if logged in 
+        -> After registering / logging in, visit the secret page
+        -> If logged out, secret page becomes unavailable again
+        
+    Key concept hinges on SESSIONS.
+    
+        HTTP is a stateless protocol, meaning the requests sent are one-time requests
+        and don't contain information about the state of use, history of the user access, etc.
+        
+        Sessions are a way to provide HTTP requests with state so information can be 
+        kept as long as a user is logged in or within a period of time that a user is using 
+        the page. The information in the session is kept with the user so that the database
+        and server can distinguish that a user has certain properties and values associated
+        with how they are using the page, such as being logged in to a certain account. 
+        
+        Think of a session as a jar of data that is passed along to all the pages that are 
+        visited and can be accessed by the server to tell the server information about the 
+        user.
