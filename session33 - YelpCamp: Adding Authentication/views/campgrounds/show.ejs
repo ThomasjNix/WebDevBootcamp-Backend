@@ -11,13 +11,17 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div class="thumbnail">
+            <div class="thumbnail show">
                  <img src="<%= campground.imgUrl %>" id="show-img" class="img-responsive">
                  <div class="caption-full">
                      <h4 class="pull-right">$1234</h4>
                      <h4><a href="#"><%= campground.name %></a></h4>
                      <p>Description: <%= campground.description %></p>
                      <p><em>Submitted by <strong><%= campground.author.username%></strong></em></p>
+                     <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                     <form id="delete_form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                         <button class="btn btn-sm btn-danger">Delete</a>
+                     </form>
                  </div>
                  
             </div>

@@ -10,6 +10,7 @@ var express = require('express'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
     passportLocalMongoose = require('passport-local-mongoose'),
+    methodOverride = require('method-override'),
     User = require('./models/user'),
     campgroundRoutes = require('./routes/campgrounds'),
     commentRoutes = require('./routes/comments'),
@@ -19,6 +20,7 @@ var express = require('express'),
 app.set('view engine','ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(methodOverride("_method"));
 
 // Databse setup
 mongoose.connect("mongodb://localhost/yelp_camp");
