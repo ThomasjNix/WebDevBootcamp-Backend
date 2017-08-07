@@ -1,0 +1,26 @@
+Refactoring - Express router
+============================
+
+Splitting up routes is important in organization and modularization of projects. Express router makes this simple and intuitive. 
+
+// Some grouping of routes, ex: campground routes in routes/campground.js
+
+    var express = require('express');
+    var router = express.Router();
+    
+    router.get(...);
+    router.get(...);
+    router.get(...);
+    router.get(...);
+    router.post(...);
+    router.put(...);
+    router.delete(...);
+    
+    module.exports = router;
+    
+    // => If the routes require some sort of parameters defined in the request, make sure to use var router = express.Router({mergeParams: true});
+        This will make the parameters carry over
+// In app.js, the main file 
+
+    var campgroundRoutes = require('./routes/campground');
+    app.use(campgroundRoutes);
