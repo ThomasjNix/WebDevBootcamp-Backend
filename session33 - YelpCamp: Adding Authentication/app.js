@@ -14,13 +14,15 @@ var express = require('express'),
     User = require('./models/user'),
     campgroundRoutes = require('./routes/campgrounds'),
     commentRoutes = require('./routes/comments'),
-    authRoutes = require('./routes/index');
+    authRoutes = require('./routes/index'),
+    flash = require('connect-flash');
     
 // Application setup
 app.set('view engine','ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
+app.use(flash());
 
 // Databse setup
 mongoose.connect("mongodb://localhost/yelp_camp");
@@ -38,18 +40,16 @@ passport.use(new LocalStrategy(User.authenticate())); // Create a new local stra
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Seed database
-// seedDB();
-
 // This will make req.user available to every single route
 // This is a middleware that will be applied to every route because of app.use
 app.use(function(req,res,next){
     res.locals.user = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
     next();
 });
 
 // Routing requirements 
-// Routing - Campgrounds
 app.get('/', function(req,res){
     res.render('home');
 });

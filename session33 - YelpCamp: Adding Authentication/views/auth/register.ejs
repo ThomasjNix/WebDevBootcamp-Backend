@@ -1,11 +1,17 @@
 <% include ../partials/header %>
-
-<h1>Register</h1>
-
-<form action="/register" method="POST">
-    <input placeholder="Username" type="text" name="username">
-    <input placeholder="Password" type="password" name="password">
-    <button type="Submit">Submit</button>
-</form>
+<div class="col-xs-offset-4 col-xs-3">
+    <h1>Register</h1>
+    <form action="/register" method="POST">
+       <div class="form-group">
+                <input class="form-control" placeholder="Username" type="text" name="username">
+            </div>
+            <div class="form-group">
+                <input class="form-control" placeholder="Password" type="password" name="password">
+            </div>
+            <div class="form-group">
+                <input class="btn btn-primary btn-lg btn-block" type="submit" value="Submit">
+            </div>
+    </form>
+</div>
 
 <% include ../partials/footer %>
