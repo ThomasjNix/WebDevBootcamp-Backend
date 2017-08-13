@@ -57,23 +57,14 @@ router.put('/:id', checkCampgroundOwnership, function(req,res){
 
 // Campgrounds CREATE
 router.post('/', isLoggedIn, function(req,res){
-    var cName = req.body.campgroundName;
-    var cImage = req.body.campgroundImage;
-    var cDesc = req.body.campgroundDesc;
-    Campground.create({
-        name: cName,
-        imgUrl: cImage,
-        description: cDesc,
-        author: {
-            id: req.user._id,
-            username: req.user.username
-        }
-    }, function(err, campground){
+    Campground.create(req.body.campground, function(err, campground){
         if (err){
             console.log(err);
         }else{
-            console.log("Addition successful, added:");
-            
+            campground.author.id = req.user._id;
+            campground.author.username = req.user.username;
+            campground.save();
+            console.log("Addition successful, added: " + campground);
             res.redirect('/campgrounds/'+campground._id);
         }
     });
